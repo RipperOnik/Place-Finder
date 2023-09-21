@@ -19,8 +19,30 @@ class Main: UIViewController, UITextFieldDelegate {
     let content = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var lastPlace: PlaceData?
     
-    let WEATHER_API_KEY = "f1414c275309b59308bf1b11c2d64963"
-    let GOOGLE_API_KEY = "AIzaSyALbZzYBBII4dB8eXwSTqHj9TstnV4o4A0"
+    var WEATHER_API_KEY: String? = nil
+    var GOOGLE_API_KEY: String? = nil
+    
+    
+    func initKeys() async{
+        if let plistPath = Bundle.main.path(forResource: "Config", ofType: "plist"),
+           let plistData = FileManager.default.contents(atPath: plistPath) {
+            
+            do {
+                if let config = try PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: Any] {
+                    if let weatherApiKey = config["WEATHER_API_KEY"] as? String {
+                        WEATHER_API_KEY = weatherApiKey
+                    }
+                    
+                    if let googleAPIKey = config["GOOGLE_API_KEY"] as? String {
+                        GOOGLE_API_KEY = googleAPIKey
+                    }
+                }
+            } catch {
+                print("Error reading plist: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     
     var preloadedData = false
     
@@ -31,6 +53,9 @@ class Main: UIViewController, UITextFieldDelegate {
         
         weatherBtn.isEnabled = false
         mapBtn.isEnabled = false
+        Task {
+            await initKeys()
+        }
         
         
         
@@ -88,7 +113,7 @@ class Main: UIViewController, UITextFieldDelegate {
         historyBtn.isEnabled = false
         errorLabel.text = ""
         
-        let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(WEATHER_API_KEY)&units=metric"
+        let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(WEATHER_API_KEY!)&units=metric"
         
         let url = URL(string: urlString)
         if let url = url {
@@ -131,7 +156,7 @@ class Main: UIViewController, UITextFieldDelegate {
     // google place api
     func getPlace(city: String, place: PlaceData){
     
-        let urlString = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(city)&types=(cities)&key=\(GOOGLE_API_KEY)&language=en"
+        let urlString = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(city)&types=(cities)&key=\(GOOGLE_API_KEY!)&language=en"
         
         let url = URL(string: urlString)
         if let url = url {
@@ -162,7 +187,7 @@ class Main: UIViewController, UITextFieldDelegate {
     
     // google place details api
     func getPlaceDetails(placeId: String, place: PlaceData){
-        let urlString = "https://maps.googleapis.com/maps/api/place/details/json?place_id=\(placeId)&fields=photo&key=\(GOOGLE_API_KEY)&language=en"
+        let urlString = "https://maps.googleapis.com/maps/api/place/details/json?place_id=\(placeId)&fields=photo&key=\(GOOGLE_API_KEY!)&language=en"
         
         let url = URL(string: urlString)
         if let url = url {
@@ -178,7 +203,7 @@ class Main: UIViewController, UITextFieldDelegate {
                         // using photo reference, we can get a place photo url
                         let photoReference = readableData.result.photos[0].photoReference
                         // google place photo api url
-                        let photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=\(photoReference)&key=\(self.GOOGLE_API_KEY)"
+                        let photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=\(photoReference)&key=\(self.GOOGLE_API_KEY!)"
                         
                         // save photo url to database
                         place.photoUrl = photoUrl
