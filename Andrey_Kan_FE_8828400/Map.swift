@@ -16,8 +16,7 @@ class Map: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
     @IBOutlet weak var slider: UISlider!
     
-    
-    @IBOutlet weak var locationTextView: UITextView!
+    @IBOutlet weak var header: UILabel!
     
     var place: PlaceData?
     
@@ -38,10 +37,8 @@ class Map: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
         
         // receive data from Main 
         if let placeData = place {
-            let cityName = "City: \(placeData.name ?? "cityName")"
-            let longitude = "Longitude: \(placeData.longitude)"
-            let latitude = "Latitude: \(placeData.latitude)"
-            locationTextView.text! = cityName + "\n" + longitude + "\n" + latitude
+            header.text = "\(placeData.name ?? "cityName")"
+            
             let location = CLLocation(latitude: placeData.latitude, longitude: placeData.longitude)
             render(location: location, zoom: slider.value)
         }

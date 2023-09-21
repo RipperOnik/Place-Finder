@@ -81,9 +81,7 @@ class History: UITableViewController {
         let place = self.places![indexPath.row]
         
         
-        cell.cityName.text = "city: \(place.name ?? "cityName")"
-        cell.longitude.text = "longitude: \(String(place.longitude))"
-        cell.latitude.text = "latitude: \(String(place.latitude))"
+        cell.cityName.text = "\(place.name ?? "cityName")"
         
         
         // set cell image

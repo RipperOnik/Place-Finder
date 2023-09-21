@@ -10,7 +10,8 @@ import UIKit
 class Main: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var searchInput: UITextField!
-    @IBOutlet weak var errorLabel: UILabel!
+    
+    @IBOutlet weak var messageLabel: UILabel!
     
     @IBOutlet weak var weatherBtn: UIButton!
     @IBOutlet weak var mapBtn: UIButton!
@@ -48,6 +49,7 @@ class Main: UIViewController, UITextFieldDelegate {
     
     
     override func viewDidLoad() {
+        messageLabel.text = ""
         super.viewDidLoad()
         searchInput.delegate = self
         
@@ -87,7 +89,8 @@ class Main: UIViewController, UITextFieldDelegate {
     
     func renderError(){
         DispatchQueue.main.async {
-            self.errorLabel.text = "City not found"
+            self.messageLabel.textColor = UIColor(red: 255, green: 0, blue: 0, alpha: 1)
+            self.messageLabel.text = "City not found"
             // disable these buttons so that user could not get data on non-existing city
             self.weatherBtn.isEnabled = false
             self.mapBtn.isEnabled = false
@@ -111,7 +114,7 @@ class Main: UIViewController, UITextFieldDelegate {
     func getPlaceData(city: String){
         // disable the history button while fetching data
         historyBtn.isEnabled = false
-        errorLabel.text = ""
+        messageLabel.text = ""
         
         let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(WEATHER_API_KEY!)&units=metric"
         
@@ -225,6 +228,8 @@ class Main: UIViewController, UITextFieldDelegate {
                             self.weatherBtn.isEnabled = true
                             self.mapBtn.isEnabled = true
                             self.historyBtn.isEnabled = true
+                            self.messageLabel.textColor = UIColor(red: 0, green: 255, blue: 0, alpha: 1)
+                            self.messageLabel.text = "City has been found"
                         }
                 
                     }

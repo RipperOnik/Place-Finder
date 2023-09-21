@@ -14,9 +14,6 @@ class CityCell: UITableViewCell {
     
     @IBOutlet weak var cityName: UILabel!
     
-    @IBOutlet weak var longitude: UILabel!
-    
-    @IBOutlet weak var latitude: UILabel!
     
     @IBOutlet weak var mapBtn: UIButton!
     

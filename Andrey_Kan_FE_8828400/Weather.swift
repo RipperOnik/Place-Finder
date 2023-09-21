@@ -21,7 +21,7 @@ class Weather: UIViewController {
     
     @IBOutlet weak var wind: UILabel!
     
-    @IBOutlet weak var locationTextView: UITextView!
+    
     
     
     var place: PlaceData?
@@ -34,14 +34,9 @@ class Weather: UIViewController {
             cityName.text = placeData.name
             weatherType.text = placeData.weatherDescription
             temperature.text = "\(placeData.temperature) °"
-            humidity.text = "Humidity: \(placeData.humidity)%"
-            wind.text = "Wind: \(round(placeData.windSpeed * 100) / 100) km/h"
+            humidity.text = "\(placeData.humidity)%"
+            wind.text = "\(round(placeData.windSpeed * 100) / 100) km/h"
             
-            let cityLabel = "City: \(placeData.name ?? "cityName")"
-            let latitude = "Latitude: \(placeData.latitude)"
-            let longitude = "Longitude: \(placeData.longitude)"
-            
-            locationTextView.text! = cityLabel + "\n" + longitude + "\n" + latitude
             
             
             let iconUrl = URL(string: placeData.weatherIconUrl!)
